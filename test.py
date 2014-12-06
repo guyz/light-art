@@ -1,7 +1,7 @@
 import svg.path
 from svg.path import parse_path
 
-def cubic_benzier(curve, step):
+def get_cubic_benzier(curve, step):
 	coords = []
 	p0 = curve.start
 	p1 = curve.control1
@@ -14,6 +14,20 @@ def cubic_benzier(curve, step):
 		coords.append((bx, by))
 		t+=step
 	return coords
+
+def get_line(line, step):
+	coords = []
+	start = line.start
+	end = line.end
+	if start == end:
+		return [(start.real, start.imag)]
+	slope = (end.imag - start.imag)/(end.real - start.real)
+	t = start.real
+	while t < end.real:
+		y = slope*(start.real-end.real)+ end.imag
+		coords.append((t, y))
+		t += step
+	return coords 
 
 def main():
 	step = 0.1
@@ -28,9 +42,9 @@ def main():
 
 	for element in parsed_path:
 		if type(element) is svg.path.path.CubicBezier:
-			print cubic_benzier(element, step)
+			get_cubic_benzier(element, step)
 		if type(element) is svg.path.path.Line:
-			print 'found'
+			get_line(element, step)
 
 if __name__ == "__main__":
     main()
