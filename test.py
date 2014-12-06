@@ -32,9 +32,9 @@ def main():
 	for current_path in path_strings:
 		for element in current_path:
 			if type(element) is svg.path.path.CubicBezier:
-				all_coords = all_coords + get_cubic_benzier(element, step)
+				all_coords.append(get_cubic_benzier(element, step))
 			if type(element) is svg.path.path.Line:
-				all_coords = all_coords + get_line(element, step)
+				all_coords.append(get_line(element, step))
 	return all_coords
 
 if __name__ == "__main__":
