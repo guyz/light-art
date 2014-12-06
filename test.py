@@ -21,25 +21,21 @@ def get_line(line, step):
 
 def main():
 	step = 0.1
+	all_coords = []
 
-	# results = []
-	# with open('tear.svg') as inputfile:
-	#     for line in inputfile:
-	#         results.append(line.strip())
-
-	# path = results[2].split("=")[1][:-2]
 	svg_image = minidom.parse('house.svg')
-	path_strings = str([path.getAttribute('d') for path in svg_image.getElementsByTagName('path')][0])
+	path_strings = [path.getAttribute('d') for path in svg_image.getElementsByTagName('path')]
+	for i in range(len(path_strings)):
+		path_strings[i] = parse_path(str(path_strings[i]))
 	svg_image.unlink()
 
-	parsed_path = parse_path(path_strings)
-
-	print parsed_path
-	for element in parsed_path:
-		# if type(element) is svg.path.path.CubicBezier:
-		# 	print get_cubic_benzier(element, step)
-		if type(element) is svg.path.path.Line:
-			print get_line(element, step)
+	for current_path in path_strings:
+		for element in current_path:
+			if type(element) is svg.path.path.CubicBezier:
+				all_coords = all_coords + get_cubic_benzier(element, step)
+			if type(element) is svg.path.path.Line:
+				all_coords = all_coords + get_line(element, step)
+	return all_coords
 
 if __name__ == "__main__":
-    main()
+    print main()
