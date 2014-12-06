@@ -1,5 +1,6 @@
 import svg.path
 from svg.path import parse_path
+from xml.dom import minidom
 
 def get_cubic_benzier(curve, step):
 	coords = []
@@ -32,19 +33,23 @@ def get_line(line, step):
 def main():
 	step = 0.1
 
-	results = []
-	with open('tear.svg') as inputfile:
-	    for line in inputfile:
-	        results.append(line.strip())
+	# results = []
+	# with open('tear.svg') as inputfile:
+	#     for line in inputfile:
+	#         results.append(line.strip())
 
-	path = results[2].split("=")[1][:-2]
-	parsed_path = parse_path(path)
+	# path = results[2].split("=")[1][:-2]
+	svg_image = minidom.parse('house.svg')
+	path_strings = str([path.getAttribute('d') for path in svg_image.getElementsByTagName('path')][0])
+	svg_image.unlink()
+
+	parsed_path = parse_path(path_strings)
 
 	for element in parsed_path:
 		if type(element) is svg.path.path.CubicBezier:
-			get_cubic_benzier(element, step)
+			print get_cubic_benzier(element, step)
 		if type(element) is svg.path.path.Line:
-			get_line(element, step)
+			print get_line(element, step)
 
 if __name__ == "__main__":
     main()
