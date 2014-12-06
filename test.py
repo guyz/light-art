@@ -25,7 +25,7 @@ def get_line(line, step):
 	slope = (end.imag - start.imag)/(end.real - start.real)
 	t = start.real
 	while t < end.real:
-		y = slope*(start.real-end.real)+ end.imag
+		y = slope*(t-end.real)+ end.imag
 		coords.append((t, y))
 		t += step
 	return coords 
