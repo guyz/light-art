@@ -103,10 +103,10 @@ def output_csv(coords):
         ct = 0
         for j in i:
             if ct == 0:
-                outfile.writerow([j[0],j[1],'off'])
+                outfile.writerow([j[0],j[1],0])
                 ct = ct + 1
             else:
-                outfile.writerow([j[0],j[1],'on'])
+                outfile.writerow([j[0],j[1],1])
                 ct = ct + 1
     # append an 'off' at the end to move to (0,0)
     outfile.writerow([0,0,'off'])
