@@ -3,6 +3,8 @@ from svg.path import parse_path
 from xml.dom import minidom
 from Tkinter import *
 import numpy as np
+import csv
+import os
 
 master = Tk()
 width = 700
@@ -11,7 +13,7 @@ height = 700
 def get_coords_from_shape(curve, n_pts=1000):
     pts = np.linspace(0,1,n_pts)
     coords = [ (curve.point(x).real, curve.point(x).imag) for x in pts]
-    print coords
+    #print coords
     return coords
 
 
@@ -68,11 +70,29 @@ def draw_path(coords, height, width):
             w.create_line(line[i], line[i+1])
     mainloop()
 
+def output_csv(coords):
+    csvfile = open('coords_out.csv','wb')
+    outfile = csv.writer(csvfile,delimiter=',')
+    # move to (0,0) first
+    outfile.writerow([0,0,'off'])
+    for i in coords:
+        ct = 0
+        for j in i:
+            if ct == 0:
+                outfile.writerow([j[0],j[1],'off'])
+                ct = ct + 1
+            else:
+                outfile.writerow([j[0],j[1],'on'])
+                ct = ct + 1
+    # append an 'off' at the end to move to (0,0)
+    outfile.writerow([0,0,'off'])
+    csvfile.close()
 
 def main():
     path = get_path_from_svg('arc.svg')
     path = normalize_path(path, height, width)
-    print "Path is : ", path
+    output_csv(path)
+    #print "Path is : ", path
     draw_path(path, height, width)
 
 
