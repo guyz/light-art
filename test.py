@@ -2,10 +2,17 @@ import svg.path
 from svg.path import parse_path
 from xml.dom import minidom
 from Tkinter import *
+import numpy as np
 
 master = Tk()
 width = 700
 height = 700
+
+def get_coords_from_shape(curve, n_pts=1000):
+    pts = np.linspace(0,1,n_pts)
+    coords = [ (curve.point(x).real, curve.point(x).imag) for x in pts]
+    print coords
+    return coords
 
 
 def get_cubic_benzier(curve, step):
@@ -28,7 +35,7 @@ def get_line(line, step):
 
 
 def get_path_from_svg(svg_path):
-    step = 0.1
+    n_pts = 100
     all_coords = []
     svg_image = minidom.parse(svg_path)
     path_strings = [path.getAttribute('d') for path in svg_image.getElementsByTagName('path')]
@@ -38,11 +45,8 @@ def get_path_from_svg(svg_path):
 
     for current_path in path_strings:
         for element in current_path:
-            if type(element) is svg.path.path.CubicBezier:
-                # all_coords.append(get_cubic_benzier(element, step))
-                pass
-            if type(element) is svg.path.path.Line:
-                all_coords.append(get_line(element, step))
+            all_coords.append(get_coords_from_shape(element))
+
     return all_coords
 
 
@@ -66,7 +70,7 @@ def draw_path(coords, height, width):
 
 
 def main():
-    path = get_path_from_svg('house.svg')
+    path = get_path_from_svg('arc.svg')
     path = normalize_path(path, height, width)
     print "Path is : ", path
     draw_path(path, height, width)
